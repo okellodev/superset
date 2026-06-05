@@ -1,8 +1,10 @@
 #!/bin/bash
 set -e
 
+export SUPERSET_PORT=${PORT:-8088}
+
 superset fab create-admin --username admin --firstname Superset --lastname Admin --email admin@superset.com --password admin 2>/dev/null || true
 superset db upgrade
 superset init
 
-exec gunicorn --bind 0.0.0.0:${PORT:-8088} --workers 1 --timeout 120 "superset.app:create_app()"
+exec /app/docker/entrypoints/run-server.sh
